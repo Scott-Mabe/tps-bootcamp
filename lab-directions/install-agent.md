@@ -49,7 +49,7 @@ services:
       - /etc/passwd:/etc/passwd:ro # LIVE PROCESSES
 ```
 
-An example of a working file looks like [this](https://github.com/ScottMabeDDHQ/labs-og/blob/main/bootcamp/deploy/docker-compose-instr-infra-integration.yml) 
+An example of a working file looks like [this](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/main/docker/deploy/docker-compose-instr-infra-integration.yml)
 
 # Adding that to the docker-compose makes sure that the agent gets installed.  And it also sets some tags.  
 
