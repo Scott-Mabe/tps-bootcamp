@@ -1,0 +1,82 @@
+version: '3'
+services:
+  discounts:
+    container_name: discounts
+    environment:
+      - FLASK_APP=discounts.py
+      #- FLASK_DEBUG=1
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=spree_discounts
+    image: discounts:${DISCOUNTS_VER}
+    command: ["/bin/bash", "-c", "sleep 3 ; flask run --port=${DISCOUNTS_PORT} --host=0.0.0.0"]
+    ports:
+      - "${DISCOUNTS_PORT}:${DISCOUNTS_PORT}"
+    depends_on:
+      - db
+    labels:
+      my.custom.label.team: "discounts"
+      my.custom.label.app: "spree"
+  store-frontend:
+    container_name: store-frontend
+    environment:
+      - RAILS_HIDE_STACKTRACE=false
+      - ADS_PORT=${ADS_PORT}
+      - DISCOUNTS_PORT=${DISCOUNTS_PORT}
+      - ADS_ROUTE=${ADS_ROUTE}
+      - DISCOUNTS_ROUTE=${DISCOUNTS_ROUTE}
+    image: store-frontend:${STORE_VER}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - discounts
+      - advertisements
+    labels:
+      my.custom.label.team: "web"
+      my.custom.label.app: "spree"
+  advertisements:
+    container_name: ads
+    environment:
+      - FLASK_APP=ads.py
+      #- FLASK_DEBUG=1
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=spree_ads
+    image: ads:${ADS_VER}
+    command: ["/bin/bash", "-c", "sleep 3 ; flask run --port=${ADS_PORT} --host=0.0.0.0"]
+    ports:
+      - "${ADS_PORT}:${ADS_PORT}"
+    depends_on:
+      - db
+    labels:
+      my.custom.label.team: "ads"
+      my.custom.label.app: "spree"
+  db:
+    container_name: postgres
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+    volumes: 
+      - ../db/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    labels:
+      my.custom.label.team: "db"
+      my.custom.label.app: "spree"
+  nginx:
+     container_name: nginx
+     image: nginx:1.21.4
+     restart: always
+     volumes:
+       - ../nginx/default.conf:/etc/nginx/conf.d/default.conf
+       - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+     ports:
+       - "8080:8080"
+     depends_on:
+       - store-frontend
+     labels:
+      my.custom.label.team: "nginx"
+      my.custom.label.app: "spree"
