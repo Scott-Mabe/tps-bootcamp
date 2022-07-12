@@ -74,3 +74,22 @@ Let's relaunch the app you should already be in the correct directory
 Check to make sure everything is running 
 
 `docker ps -a`
+
+Let's generate more traffic now that we have rebuilt the application 
+
+`cd ~/docker/ecommerce-workshop/traffic`
+
+`./generate-traffic.sh`
+
+Confirm this worked while in the same directory 
+
+`tail -f status.log`
+
+The following command will allow us to execute the agent status command from the agent docker container.
+
+`docker exec -it dd-agent agent status`
+
+This command should show you the last few characters of the API Key you generated.
+
+`docker exec -it dd-agent agent status | grep key` 
+
