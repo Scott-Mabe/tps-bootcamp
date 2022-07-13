@@ -4,7 +4,7 @@ This guide will walk us through the step by step details on how to perform the l
 
 First we will need to SSH into each machine 
 
-Once inside the machine `cd ~/docker/deploy`
+Once inside the machine `cd ~/docker/ecommerce-workshop/deploy`
 Then `cat docker-compose-no-agent.yml` 
 
 This file is the barebones config file used to launch the demo app we are using today.  It does not have an agent installed.  
@@ -59,7 +59,7 @@ Other items to note the ports for APM and Metrics. And the volumes will be used 
 
 To add the API key from our account we need to edit the .env file from the deploy folder.
 
-`cd ~/docker/deploy`
+`cd ~/docker/ecommerce-workshop/deploy
 
 Use vi or nano to edit .env
 
@@ -77,7 +77,7 @@ Check to make sure everything is running
 
 Let's generate more traffic now that we have rebuilt the application 
 
-`cd ~/docker/traffic`
+`cd ~/docker/ecommerce-workshop/traffic`
 
 `./generate-traffic.sh`
 
