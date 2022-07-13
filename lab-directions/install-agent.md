@@ -59,7 +59,7 @@ Other items to note the ports for APM and Metrics. And the volumes will be used 
 
 To add the API key from our account we need to edit the .env file from the deploy folder.
 
-cd ~/docker/ecommerce-workshop/deploy
+`cd ~/docker/ecommerce-workshop/deploy`
 
 Use vi or nano to edit .env
 
