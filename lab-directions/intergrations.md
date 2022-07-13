@@ -2,7 +2,7 @@
 
 Let's start by taking down any running version of the app
 
-`cd ~/docker/ecommerce-workshop/deploy`
+`cd ~/docker/deploy`
 
 `docker-compose -f docker-compose-agent.yml down`
 
