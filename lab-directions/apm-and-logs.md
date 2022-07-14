@@ -205,3 +205,81 @@ We will need to replace the local docker image with a new one to reflect all the
 `docker build . -t store-frontend:1.1` 
 
 This will take a few minutes and may generate a depency error 
+
+# Instrument discounts service 
+
+We will now continue instrumenting services 
+
+The discount service uses python we can confirm this by reading our deply file 
+
+`cat ~/docker/ecommerce-workshop/deploy/docker-compose-int.yml` 
+
+Let's get into intrsumenting that service 
+
+`cd ~/docker/ecommerce-workshop/discounts-service`
+
+We need to add `ddtrace` to the `requirement.txt` file so that it looks like this 
+
+```
+certifi==2020.12.5
+chardet==4.0.0
+click==7.1.2
+ddtrace
+Flask==1.1.2
+```
+Link to [example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/main/docker/discounts-service/requirements.txt)
+
+Now we need to make sure the service runs as expected and can use ddtrace 
+
+`cd ~/docker/ecommerce-workshop/deploy/`
+
+Now edit your `~/docker/ecommerce-workshop/deploy/docker-compose-int.yml` file to contain the following for the discount service
+
+```
+image: discounts:${DISCOUNTS_VER}
+    command: ["/bin/bash", "-c", "sleep 3 ; ddtrace-run flask run --port=${DISCOUNTS_PORT} --host=0.0.0.0"]
+```
+
+Here is an example if you need [help](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/08c80d7c3f6b5e90c0b5b5f096236c6c4072f54a/docker/deploy/docker-compose-instr-brum.yml#L47)
+
+Now we need to make sure this service can send logs 
+
+`cd ~/docker/ecommerce-workshop/discounts-service`
+
+Edit the `discounts.py` file 
+
+We want to add the following so that it looks like this
+
+```
+
+from bootstrap import create_app
+from models import Discount, DiscountType, Tracker, db
+
+##### setup datadog to connect traces and logs #####
+from ddtrace import patch_all; patch_all(logging=True)
+import logging
+from ddtrace import tracer
+
+FORMAT = ('%(asctime)s %(levelname)s [%(name)s]'
+          '[dd.service=%(dd.service)s dd.env=%(dd.env)s dd.version=%(dd.version)s dd.trace_id=%(dd.trace_id)s dd.span_id=%(dd.span_id)s] '
+          '- %(message)s')
+log = logging.getLogger(__name__)
+##### setup datadog to connect traces and logs #####
+
+app = create_app()
+CORS(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+##### setup datadog to connect traces and logs
+logging.basicConfig(level=logging.INFO, format=FORMAT)
+```
+
+Here is the example file for [rerefence and help](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/08c80d7c3f6b5e90c0b5b5f096236c6c4072f54a/docker/discounts-service/discounts.py.instr.fixed#L20)
+
+Now let's build a new docker image for this service 
+
+`cd ~/docker/ecommerce-workshop/discounts-service`
+
+`docker build . -t discounts:1.1`
+
+
