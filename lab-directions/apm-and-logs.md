@@ -196,3 +196,12 @@ end
 ```
 Hint file for [reference](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/c1d774b729ab4e95fd447a4f4b6de692df28db6e/docker/store-frontend/src/store-front/config/environments/development.rb#L110)
 
+# Build docker image for the front end 
+
+We will need to replace the local docker image with a new one to reflect all the changes we made 
+
+`cd ~/docker/ecommerce-workshop/store-frontend`
+
+`docker build . -t store-frontend:1.1` 
+
+This will take a few minutes and may generate a depency error 
