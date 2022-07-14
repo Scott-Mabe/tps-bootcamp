@@ -276,6 +276,8 @@ logging.basicConfig(level=logging.INFO, format=FORMAT)
 
 Here is the example file for [rerefence and help](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/08c80d7c3f6b5e90c0b5b5f096236c6c4072f54a/docker/discounts-service/discounts.py.instr.fixed#L20)
 
+# Build docker image for the discounts service 
+
 Now let's build a new docker image for this service 
 
 `cd ~/docker/ecommerce-workshop/discounts-service`
