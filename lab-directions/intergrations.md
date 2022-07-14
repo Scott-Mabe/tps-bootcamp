@@ -65,3 +65,51 @@ location /nginx_status {
 
 For reference we can use this [example](https://github.com/ScottMabeDDHQ/labs-og/blob/f4ad97f39dcab938b90cde6c1905ab91c1c296fd/bootcamp/nginx/default.conf.instr#L11) 
 
+Let's make sure can build the NGINX container 
+
+`cd ~/docker/ecommerce-workshop/deploy` 
+
+Now we will edit the file `docker-compose-int.yml` 
+
+The NGINX container should be at the end of the file under the DB service.  See below for what we are adding.
+
+``` 
+nginx:
+     container_name: nginx
+     image: nginx:1.21.4
+     restart: always
+     environment:
+       - DD_ENV=dev
+     volumes:
+       - ../nginx/default.conf:/etc/nginx/conf.d/default.conf
+       - ../nginx/nginx.conf:/etc/nginx/nginx.conf
+     ports:
+       - "8080:8080"
+     depends_on:
+       - store-frontend
+     labels:
+       com.datadoghq.ad.check_names: '["nginx"]'
+       com.datadoghq.ad.init_configs: '[{}]'
+       com.datadoghq.ad.instances: '[{"nginx_status_url": "http://%%host%%:8080/nginx_status/"}]'
+       my.custom.label.team: "nginx"
+       my.custom.label.app: "spree"
+```
+
+For reference we can reffer to this [example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/3e8f7c0563d105a512619e6bef0da4665ed9a499/docker/deploy/docker-compose-instr-infra-integration.yml#L95)
+
+# Complete Integration Configuration 
+
+Now we will deploy what we created. From the deploy folder
+
+`docker-compose -f docker-compose-int.yml up -d`
+
+Confirm the deployment 
+
+`docker ps -a`
+
+Check the agent status 
+
+`docker exec -it dd-agent agent status`
+
+We should see statuses of OK with NGINX and postgres
+
