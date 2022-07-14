@@ -218,7 +218,7 @@ Let's get into intrsumenting that service
 
 `cd ~/docker/ecommerce-workshop/discounts-service`
 
-We need to add `ddtrace` to the `requirement.txt` file so that it looks like this 
+We need to add `ddtrace` to the `requirements.txt` file so that it looks like this 
 
 ```
 certifi==2020.12.5
@@ -283,5 +283,95 @@ Now let's build a new docker image for this service
 `cd ~/docker/ecommerce-workshop/discounts-service`
 
 `docker build . -t discounts:1.1`
+
+# Instrument advertisement service 
+
+We're now going to instrument the advertisement service.  
+
+`cd ~/docker/ecommerce-workshop/ads-service`
+
+Edit the `requirements.txt` file it should look like below
+
+```
+certifi==2020.11.8
+chardet==3.0.4
+click==7.1.2
+ddtrace
+Flask==1.1.2
+```
+For [help](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/main/docker/ads-service/requirements.txt)
+
+Now we need to edit the deployment file 
+
+`cd ~/docker/ecommerce-workshop/deploy/`
+
+Now edit your `~/docker/ecommerce-workshop/deploy/docker-compose-int.yml` file to contain the following for the ads-service
+
+```
+image: ads:${ADS_VER}
+    command: ["/bin/bash", "-c", "sleep 3 ; ddtrace-run flask run --port=${ADS_PORT} --host=0.0.0.0"]
+```
+
+Let's go back to the ads-service folder to conintue editing 
+
+`cd ~/docker/ecommerce-workshop/ads-service`
+
+Now lets edit `ads.py` to contain the logging info we need. By adding the following 
+
+```
+
+FORMAT = ('%(asctime)s %(levelname)s [%(name)s]'
+          '[dd.service=%(dd.service)s dd.env=%(dd.env)s dd.version=%(dd.version)s dd.trace_id=%(dd.trace_id)s dd.span_id=%(dd.span_id)s] '
+          '- %(message)s')
+log = logging.getLogger(__name__)
+##### setup datadog to connect traces and logs #####
+
+app = create_app()
+CORS(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+##### setup datadog to connect traces and logs
+logging.basicConfig(level=logging.INFO, format=FORMAT)
+
+@app.route('/')
+def hello():
+    app.logger.info("home url for ads called")
+    return Response({'Hello from Advertisements!': 'world'}, mimetype='application/json')
+
+@app.route('/banners/<path:banner>')
+def banner_image(banner):
+    app.logger.info(f"attempting to grab banner at {banner}")
+    return send_from_directory('ads', banner)
+```
+If you need help refer to this [file](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/2d24d4638b14a4bfc64bd8a7f9aded6f4a485ed7/docker/ads-service/ads.py.instr.fixed#L13) 
+
+
+# Build docker image for the ads service 
+
+Now we need to build a new image for the ads service
+
+`cd ~/docker/ecommerce-workshop/ads-service`
+
+`docker build . -t ads:1.1`
+
+# Deploy time!! 
+
+`cd ~/docker/ecommerce-workshop/deploy`
+
+We must edit the `.env` file to include the new image versions 1.1 it should now look like this 
+
+```
+# deploy version
+STORE_VER=1.1
+ADS_VER=1.1
+DISCOUNTS_VER=1.1
+```
+Example [file](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/2d24d4638b14a4bfc64bd8a7f9aded6f4a485ed7/docker/deploy/.env#L8)
+
+`docker-compose -f docker-compose-int.yml up -d` 
+
+As always let's validate the deployment 
+
+`docker ps -a` 
 
 
