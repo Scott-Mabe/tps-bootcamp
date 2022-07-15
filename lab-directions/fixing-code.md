@@ -46,4 +46,78 @@ Edit `.env` so that we see the following `STORE_VER=1.2`
 
 Now we can redploy and confirm that we have resolved the problem
 
+`docker-compose -f docker-compose-int.yml up`
+
+Now let's go back to the our dd accounts and confirm we've fixed the app.
+
+# Resolving high latency and db problem 
+
+During our review we found latency to be high within the ads service let's resolve that and redeploy.
+
+`cd ~/docker/ecommerce-workshop/deploy` 
+
+Take the app down 
+
 `docker-compose -f docker-compose-int.yml down`
+
+Let's edit the ads service app 
+
+`cd ~/docker/ecommerce-workshop/ads-service`
+
+The file having trouble is `ads.py` lets edit that 
+
+Remove the following 
+
+```
+# adding function delay from 3s to 5s
+def sleep(t):
+    time.sleep(t)
+```
+
+And 
+
+```
+# adding delay from 3s to 5s
+            num = random.randint(3,5)
+            sleep(num)
+```
+
+[Example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/main/docker/ads-service/ads.py)
+
+down that we have resolved the ads service problem let's create a new docker image
+
+# Build new image for ads service 
+
+`docker build . -t ads:1.2` 
+
+Before we relaunch let's resolve problems with the db service
+
+`cd ~/docker/ecommerce-workshop/discounts-service`
+
+And edit the `discounts.py` file to replace the following 
+
+```
+discounts = Discount.query.all()
+```
+
+with 
+
+```
+discounts = Discount.query.options(joinedload('*')).all()
+```
+
+[Example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/dd820030ed838118be266ed04315a12dde950c0a/docker/discounts-service/discounts.py#L46)
+
+# Build Docker image for Discounts service 
+
+`docker build . -t discounts:1.2`
+
+Now we need to update the env file to reflect the new versions of the images 
+
+`cd ~/docker/ecommerce-workshop/deploy`
+
+Edit the `.env` file 
+
+
+
+
