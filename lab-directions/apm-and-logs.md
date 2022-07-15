@@ -375,3 +375,6 @@ As always let's validate the deployment
 `docker ps -a` 
 
 
+# This completes configuring APM and Logging 
+
+Now we get to troubleshoot using our Datadog accounts.

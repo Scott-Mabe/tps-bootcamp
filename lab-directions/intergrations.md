@@ -113,3 +113,6 @@ Check the agent status
 
 We should see statuses of OK with NGINX and postgres
 
+#  Your Agents and Integrations should now be working
+
+Let's check our work in the Datadog console.  
