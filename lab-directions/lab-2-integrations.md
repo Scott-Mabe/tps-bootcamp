@@ -63,7 +63,7 @@ location /nginx_status {
     }
 ```
 
-For reference we can use this [example](https://github.com/ScottMabeDDHQ/labs-og/blob/f4ad97f39dcab938b90cde6c1905ab91c1c296fd/bootcamp/nginx/default.conf.instr#L11) 
+For reference we can use this [example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/493f9e2628a16c8bd85028f109e00360227a2f27/docker/nginx/default.conf#L11) 
 
 Let's make sure can build the NGINX container 
 
