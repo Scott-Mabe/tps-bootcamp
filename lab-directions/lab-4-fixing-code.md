@@ -122,4 +122,4 @@ Edit the `.env` file to include discounts version 1.2 let's relaunch the applica
 
 # Now we need to make edits in the Datadog console.
 
-To make sure logs are being paresed correctly we will clone the python pipeline and edit our
+To make sure logs are being paresed correctly we will clone the python pipeline and edit our newly created pipeline 
