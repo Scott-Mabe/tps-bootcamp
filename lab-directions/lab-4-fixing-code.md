@@ -116,8 +116,10 @@ Now we need to update the env file to reflect the new versions of the images
 
 `cd ~/docker/ecommerce-workshop/deploy`
 
-Edit the `.env` file 
+Edit the `.env` file to include discounts version 1.2 let's relaunch the application.
 
+`docker-compose -f docker-compose-int.yml up -d`
 
+# Now we need to make edits in the Datadog console.
 
-
+To make sure logs are being paresed correctly we will clone the python pipeline and edit our
