@@ -48,3 +48,82 @@ Edit `application.rb` to have the following at the end of the file
 [Example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/f11675c2316be56231765a03bab878f11e0fd9ac/docker/store-frontend/src/store-front/config/application.rb#L47)
 
 
+Now we must edit the Javascript to allow rum 
+
+`cd ~/docker/ecommerce-workshop/store-frontend/src/store-front/app/views/layouts`
+
+Edit the `application.rb` file to add the following 
+
+```
+<script>
+      window.DD_RUM && window.DD_RUM.init({
+        applicationId: '<%= ENV['DD_APPLICATION_ID'] %>',
+        clientToken: '<%= ENV['DD_CLIENT_TOKEN'] %>',
+        site: '<%= ENV['DD_SITE'] %>',
+        service:'<%= ENV['DD_BRUM_SERVICE'] %>',
+        env:'<%= ENV['DD_ENV'] %>',
+        version: '<%= ENV['DD_VERSION'] %>',
+        sampleRate: 100,
+        trackInteractions: true,
+        defaultPrivacyLevel: 'mask-user-input',
+        allowedTracingOrigins: [/http:\/\/ec2.*\.amazonaws\.com:8080/]
+    }); 
+
+    window.DD_RUM &&
+    window.DD_RUM.startSessionReplayRecording();
+  </script>
+```
+[Example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/main/docker/store-frontend/src/store-front/app/views/layouts/application.html.erb)
+
+And now 
+
+`cd ~/docker/ecommerce-workshop/store-frontend/src/store- front/app/views/spree/layouts`
+
+Edit the `application.html.erb` file to contain the following 
+
+```
+<script>
+    window.DD_RUM && window.DD_RUM.init({
+        applicationId: '<%= ENV['DD_APPLICATION_ID'] %>',
+        clientToken: '<%= ENV['DD_CLIENT_TOKEN'] %>',
+        site: '<%= ENV['DD_SITE'] %>',
+        service:'<%= ENV['DD_BRUM_SERVICE'] %>',
+        env:'<%= ENV['DD_ENV'] %>',
+        version: '<%= ENV['DD_VERSION'] %>',
+        sampleRate: 100,
+        trackInteractions: true,
+        defaultPrivacyLevel: 'mask-user-input',
+        allowedTracingOrigins: [/http:\/\/ec2.*\.amazonaws\.com:8080/]
+    });
+
+    window.DD_RUM &&
+    window.DD_RUM.startSessionReplayRecording();
+  </script>
+```
+# Build new Docker image for the store front 
+
+`cd ~/docker/ecommerce-workshop/store-frontend`
+
+`docker build . -t store-frontend:1.3`
+
+Now let's edit the `.env` file 
+
+`cd ~/docker/ecommerce-workshop/deploy`
+
+Edit `.env` to relect the new version which is `1.3`
+
+Confirm the docker-compose file by reading it 
+
+`cat docker-compose-instr-brum.yml`
+
+Let's start the app 
+
+`docker-compose -f docker-compose-instr-brum.yml up -d`
+
+# Verify the install 
+
+`curl http://169.254.169.254/latest/meta-data/public-hostname; echo` 
+
+This will get you the public URL of your VM or use the spreadsheet 
+
+Use the url and add :8080 to the end to see the webpage 
