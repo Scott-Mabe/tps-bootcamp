@@ -110,7 +110,7 @@ Now let's edit the `.env` file
 
 `cd ~/docker/ecommerce-workshop/deploy`
 
-Edit `.env` to relect the new version which is `1.3`
+Edit `.env` to relect the new version which is `1.3` and add `applicationId:` and `clientToken` from the RUM App that we made in the Datadog UI
 
 Confirm the docker-compose file by reading it 
 
