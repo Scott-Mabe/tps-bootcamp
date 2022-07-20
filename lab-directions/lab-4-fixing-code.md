@@ -46,7 +46,7 @@ Edit `.env` so that we see the following `STORE_VER=1.2`
 
 Now we can redploy and confirm that we have resolved the problem
 
-`docker-compose -f docker-compose-int.yml up`
+`docker-compose -f docker-compose-int.yml up -d`
 
 Now let's go back to the our dd accounts and confirm we've fixed the app.
 
