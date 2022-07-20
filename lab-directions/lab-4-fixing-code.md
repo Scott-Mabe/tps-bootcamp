@@ -50,7 +50,7 @@ Now we can redploy and confirm that we have resolved the problem
 
 Now let's go back to the our dd accounts and confirm we've fixed the app.
 
-# Resolving high latency and db problem 
+# Resolving high latency
 
 During our review we found latency to be high within the ads service let's resolve that and redeploy.
 
@@ -90,7 +90,11 @@ down that we have resolved the ads service problem let's create a new docker ima
 
 `docker build . -t ads:1.2` 
 
-Before we relaunch let's resolve problems with the db service
+# Discounts service and postgres 
+
+Within in the console we will need to investigate efficiency of the service.   With in APM we should see some trouble with queries. 
+
+Let's resolve those troubles. 
 
 `cd ~/docker/ecommerce-workshop/discounts-service`
 
