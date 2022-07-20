@@ -116,7 +116,7 @@ Confirm the docker-compose file by reading it
 
 `cat docker-compose-instr-brum.yml`
 
-Let's start the app 
+Let's start the app fyi I changed the name based on the file we use on July 20th
 
 `docker-compose -f docker-compose-instr-brum.yml up -d`
 
