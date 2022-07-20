@@ -358,6 +358,53 @@ Now we need to build a new image for the ads service
 
 `cd ~/docker/ecommerce-workshop/deploy`
 
+Let's be sure to edit our docker-compose file to have everything it needs for ads and discounts
+
+We need to add the following to `docker-compose-int.ym`
+
+First ads needs to look like this 
+
+```
+advertisements:
+    container_name: ads
+    environment:
+      - FLASK_APP=ads.py
+      - FLASK_DEBUG=1
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=spree_ads
+      - DD_SERVICE=ads-service
+      - DD_AGENT_HOST=agent
+      - DD_LOGS_INJECTION=true
+      - DD_PROFILING_ENABLED=true
+      - DD_RUNTIME_METRICS_ENABLED=true
+      - DD_VERSION=${ADS_VER}
+      - DD_ENV=dev
+```
+
+And discounts should look like this 
+
+```
+discounts:
+    container_name: discounts
+    environment:
+      - FLASK_APP=discounts.py
+      # - FLASK_DEBUG=1
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_HOST=db
+      - POSTGRES_DB=spree_discounts
+      - DD_SERVICE=discounts-service
+      - DD_RUNTIME_METRICS_ENABLED=true #enable runtime metrics collection
+      - DD_AGENT_HOST=agent
+      - DD_LOGS_INJECTION=true
+      - DD_PROFILING_ENABLED=true
+      - DD_VERSION=${DISCOUNTS_VER}
+      - DD_ENV=dev
+```
+[Example](https://github.com/ScottMabeDDHQ/tps-bootcamp/blob/main/docker/deploy/docker-compose-instr-brum.yml)
+
 We must edit the `.env` file to include the new image versions 1.1 it should now look like this 
 
 ```
@@ -377,4 +424,4 @@ As always let's validate the deployment
 
 # This completes configuring APM and Logging 
 
-Now we get to troubleshoot using our Datadog accounts.
+Now we get to observe and troubleshoot using our Datadog accounts.
