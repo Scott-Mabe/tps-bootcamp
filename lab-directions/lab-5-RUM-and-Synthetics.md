@@ -77,7 +77,7 @@ Edit the `application.rb` file to add the following
 
 And now 
 
-`cd ~/docker/ecommerce-workshop/store-frontend/src/store- front/app/views/spree/layouts`
+`cd ~/docker/ecommerce-workshop/store-frontend/src/store-front/app/views/spree/layouts`
 
 Edit the `application.html.erb` file to contain the following 
 
